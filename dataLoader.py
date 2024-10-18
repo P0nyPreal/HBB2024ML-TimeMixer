@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 
+
 class ETTh1Dataset(Dataset):
     def __init__(self, data, input_window, output_window, scaler=None):
         self.data = data
