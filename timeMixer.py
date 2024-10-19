@@ -190,7 +190,7 @@ class Model(nn.Module):
     def __init__(self, configs):
         super(Model, self).__init__()
         self.configs = configs
-        self.task_name = configs.task_name
+        # self.task_name = configs.task_name
         self.seq_len = configs.seq_len
         self.label_len = configs.label_len
         self.pred_len = configs.pred_len
@@ -218,54 +218,6 @@ class Model(nn.Module):
             ]
         )
 
-        if self.task_name == 'long_term_forecast' or self.task_name == 'short_term_forecast':
-            self.predict_layers = torch.nn.ModuleList(
-                [
-                    torch.nn.Linear(
-                        configs.seq_len // (configs.down_sampling_window ** i),
-                        configs.pred_len,
-                    )
-                    for i in range(configs.down_sampling_layers + 1)
-                ]
-            )
-
-            if self.channel_independence:
-                self.projection_layer = nn.Linear(
-                    configs.d_model, 1, bias=True)
-            else:
-                self.projection_layer = nn.Linear(
-                    configs.d_model, configs.c_out, bias=True)
-
-                self.out_res_layers = torch.nn.ModuleList([
-                    torch.nn.Linear(
-                        configs.seq_len // (configs.down_sampling_window ** i),
-                        configs.seq_len // (configs.down_sampling_window ** i),
-                    )
-                    for i in range(configs.down_sampling_layers + 1)
-                ])
-
-                self.regression_layers = torch.nn.ModuleList(
-                    [
-                        torch.nn.Linear(
-                            configs.seq_len // (configs.down_sampling_window ** i),
-                            configs.pred_len,
-                        )
-                        for i in range(configs.down_sampling_layers + 1)
-                    ]
-                )
-
-        if self.task_name == 'imputation' or self.task_name == 'anomaly_detection':
-            if self.channel_independence:
-                self.projection_layer = nn.Linear(
-                    configs.d_model, 1, bias=True)
-            else:
-                self.projection_layer = nn.Linear(
-                    configs.d_model, configs.c_out, bias=True)
-        if self.task_name == 'classification':
-            self.act = F.gelu
-            self.dropout = nn.Dropout(configs.dropout)
-            self.projection = nn.Linear(
-                configs.d_model * configs.seq_len, configs.num_class)
 
     def out_projection(self, dec_out, i, out_res):
         dec_out = self.projection_layer(dec_out)
