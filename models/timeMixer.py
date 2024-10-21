@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from functions import series_decomp, DataEmbedding_wo_pos, Normalize
+from TimemixerHBB.utils.functions import series_decomp, DataEmbedding_wo_pos, Normalize
 # from layers.Embed import DataEmbedding_wo_pos
 # from layers.StandardNorm import Normalize
 
